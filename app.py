@@ -24,7 +24,7 @@ def main():
     choice = ""
     while choice != "3":
         display(doubloons, reputation)
-        choice = input("Enter your choice: ")
+        choice = input("Enter your choice: ").strip()
 
         if choice == "1":
             print("Welcome to Dice Duel!")
@@ -35,7 +35,11 @@ def main():
         else:
             print("Invalid selection, Please select 1, 2, or 3")
 
+# function for showing score and reputation
 
-doubloons = 12
-reputation = 0
+
+def show_score(doubloons, reputation):
+    print(f"Doubloons: {doubloons}       Reputation: {reputation}")
+
+
 main()
