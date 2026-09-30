@@ -91,11 +91,11 @@ def player_turn():
     print(f"Your current score is {starting_score}")
     while starting_score <= 21:
         if yes_or_no("Roll again? (Yes/no)"):
-            starting_score = starting_score() + die_roll()
+            starting_score = starting_score + die_roll()
             print(f"Your new total score is {starting_score} ")
         else:
             print(f"You decided to stand on {starting_score}")
-            return
+            break
     return starting_score
 
 
@@ -104,4 +104,6 @@ def player_turn():
     # print("You got:", answer)
     # for i in range(20):
     #     print(die_roll())
+result = player_turn()
+print(f"{result}")
 main()
