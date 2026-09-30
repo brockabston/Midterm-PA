@@ -89,21 +89,41 @@ def die_roll():
 def player_turn():
     starting_score = die_roll() + die_roll()
     print(f"Your current score is {starting_score}")
-    while starting_score <= 21:
-        if yes_or_no("Roll again? (Yes/no)"):
+    while starting_score < 21:
+        if yes_or_no("Roll again? (Yes/no): "):
             starting_score = starting_score + die_roll()
-            print(f"Your new total score is {starting_score} ")
+            print(f"Your new total score is {starting_score}! ")
         else:
-            print(f"You decided to stand on {starting_score}")
+            print(f"You decided to stand on {starting_score}! ")
             break
+    if starting_score > 21:
+        print("You busted! You will get luckier next time!")
+    print(f"Final Score: {starting_score}")
     return starting_score
 
+
+def opponent_turn():
+    opponent_score = die_roll()+die_roll()
+    print(
+        f"Your opponent rolled a {opponent_score} with their first two rolls! ")
+    while opponent_score < 17:
+        print("Your opponent is rolling again!")
+        opponent_score = opponent_score + die_roll()
+        print(f"Oppenent's score is now {opponent_score}")
+    if opponent_score == 21:
+        print(f"Opponents Score: {opponent_score}, Uh Oh try and beat that! ")
+    elif opponent_score > 21:
+        print(f"Opponents Score: {opponent_score} , Your opponent busted!")
+    else:
+        print(f"Your opponents final roll total is {opponent_score}")
+    return opponent_score
 
     # Main flow of Control
     # answer = yes_or_no("Test? (Yes/no): ")
     # print("You got:", answer)
     # for i in range(20):
     #     print(die_roll())
-result = player_turn()
-print(f"{result}")
+result = opponent_turn()
+for i in range(3):
+    print(opponent_turn())
 main()
