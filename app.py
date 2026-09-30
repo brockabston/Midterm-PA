@@ -86,9 +86,22 @@ def die_roll():
         return roll
 
 
-# Main flow of Control
-# answer = yes_or_no("Test? (Yes/no): ")
-# print("You got:", answer)
-for i in range(20):
-    print(die_roll())
+def player_turn():
+    starting_score = die_roll() + die_roll()
+    print(f"Your current score is {starting_score}")
+    while starting_score <= 21:
+        if yes_or_no("Roll again? (Yes/no)"):
+            starting_score = starting_score() + die_roll()
+            print(f"Your new total score is {starting_score} ")
+        else:
+            print(f"You decided to stand on {starting_score}")
+            return
+    return starting_score
+
+
+    # Main flow of Control
+    # answer = yes_or_no("Test? (Yes/no): ")
+    # print("You got:", answer)
+    # for i in range(20):
+    #     print(die_roll())
 main()
