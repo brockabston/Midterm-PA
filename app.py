@@ -75,25 +75,20 @@ def game_over(doubloons, reputation):
     else:
         return False
 
+# inported randomizer, return dice roll but rolling a 6 earns 10
+
 
 def die_roll():
     roll = random.randint(1, 6)
-    match roll:
-        case 1:
-            return roll = 1
-        case 2:
-            return roll = 2
-        case 3:
-            return roll = 3
-        case 4:
-            return roll = 4
-        case 5:
-            return roll = 5
-        case 6:
-            return roll = 10
+    if roll == 6:
+        return 10
+    else:
+        return roll
 
 
 # Main flow of Control
 # answer = yes_or_no("Test? (Yes/no): ")
 # print("You got:", answer)
+for i in range(20):
+    print(die_roll())
 main()
