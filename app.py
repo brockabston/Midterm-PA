@@ -1,13 +1,17 @@
-import random
+import random  # looked up how to random generate and had to use import
 # Constant menu dividers
 DISPLAY_DIVIDER = "=" * 40
 DISPLAY_SINGLE_DIVID = "-" * 40
-ships = [["sloop", 2, 4, "merchant convoy"],
+# def display_divider():
+#     print(""* 30)
+
+ships = [["sloop", 2, 4, "merchant convoy"],  # Constant but had to use lowercase so inputs from user would match easier with .lower()
          ["brigantine", 3, 6, "naval patrol"],
          ["frigate", 4, 8, "cursed fog"],
          ["galleon", 5, 10, "rival armada"],
          ["man-o-war", 6, 12, "the kraken"]]
-
+encounters = ["merchant convoy", "naval patrol",
+              "cursed fog", "rival armada", "the kraken"]
 # Display function
 
 
@@ -37,6 +41,7 @@ def main():  # navigating main menu and making sure no incorrect inputs
             doubloons = dice_duel(doubloons, reputation)
         elif choice == "2":
             print("Welcome to Hire the Fleet!")
+            show_ships()
         elif choice == "3":  # ends app
             print("Cya! Good luck on your journey, Captain!")
         else:
@@ -147,20 +152,11 @@ def die_winner(player_score, opponent_score):  # decides winner of dice duel
 def dice_duel(doubloons, reputation):  # main dice duel game function
     print(DISPLAY_DIVIDER)
     print(f"     Welcome to dice duel Captain!")
-    print(DISPLAY_DIVIDER)
+    print(DISPLAY_SINGLE_DIVID)
     show_score(doubloons, reputation)
     print(DISPLAY_SINGLE_DIVID)
-    print("       Rules for Dice Duel")  # lists rules
-    print(DISPLAY_SINGLE_DIVID)
-    print("Rule 1: You may only bet doubloons you have currently!")
-    print("Rule 2: You start by rolling two die and try to get as close to 21 as possible!")
-    print("Rule 3: You can chose to roll again once as many times as you want with each adding to your previous rolls that turn! But be careful, going over 21 means you bust and lose!")
-    print("Rule 4: Ties result in a rival captain win. The only exception is if you both finish with a 21, you beat the rival captain! ")
-    print("Rule 5: Die rolls are equal to the number you roll, except rolling a 6 is counted as 10 towards your total.")
-    print("Rule 6: The rival captain always rolls after you have already gotten your total. ")
-    print("Rule 7: The rival captain keeps rolling until their score is 17 or more. ")
-    print("Rule 8: If you bust, the game ends. The rival captain will not roll as you lose as soon as you bust. ")
-    print("Rule 9: If the rival busts, you win! ")
+    print()
+    dice_rules()
     print(DISPLAY_SINGLE_DIVID)
     print("Now that you've seen the rules, place your wager when you're ready to start!")
     round_doubloons = doubloons
@@ -196,37 +192,70 @@ def dice_duel(doubloons, reputation):  # main dice duel game function
     return doubloons
 
 
-def hire_the_fleet():
-    pass
+def hire_the_fleet(doubloons, reputation):
+    fleet_rules()
 
 
-def show_ships():
-    print("#    Ship    Cost    Rep")
+def show_ships():  # prints list of ships
+    print("#    Ship          Cost        Rep")
+    print(DISPLAY_SINGLE_DIVID)
     number = 1
     for ship in ships:  # grabs each list and goes through and prints
-        print(f"{number}  {ship[0]}       {ship[1]}      {ship[2]}")
+        # print(f"{number}  {ship[0]}       {ship[1]}      {ship[2]}")       #original
+        # looked up how to allign and format code.
+        print(f"{number:<5}{ship[0]:<15}{ship[1]:<12}{ship[2]}")
         number = number + 1
 
 
 def hire_ships(doubloons):
     while True:
         want_amount = get_num(
-            "How many ships do you want to buy? (1-3): ", 1, 3)
+            "How many ships do you want to buy? (1-3 or 0 to return to menu): ", 0, 3)
+        if want_amount == 0:  # escape back to menu if youre out of coins or dont want to buy ship
+            return [], 0  # had to look up how to return something but have no value without returning "none", was breaking my code over and over
         owned_ships = []
         cost = 0
-        for n in range(1, want_amount + 1):
+        # +1 allows it to see that number. without it would stop before the want amount #
+        for i in range(1, want_amount + 1):
             while True:
-                choice = get_num(f"Ship {n}: ", 1, 5) - 1
+                # choice looks at list 1-5 then subtracts 1 from choice to match ship list
+                choice = get_num(f"Ship {i}: ", 1, 5) - 1
                 if choice in owned_ships:
+                    # checks if ship is already in owned ships
                     print("You already have this ship, choose another one!")
                 else:
                     break
-            owned_ships.append(choice)
+            owned_ships.append(choice)  # puts your choice in owned ships
             cost = cost + ships[choice][1]
         if cost <= doubloons:
             return owned_ships, cost
         print(
             f"Your choices of ships are too expensive. It costs {cost} and you only have {doubloons}. Play more Dice duel to earn more doubloons!")
+
+
+def fleet_rules():
+    print("Welcome to Hire The Fleet!")
+    print(DISPLAY_SINGLE_DIVID)
+    print("Rule 1: Displays five different available ships for hire including purchase cost and reputation earned from voyage.")
+    print("Rule 2: Hire one, two, or three different ships and pay every hire fee up front.")
+    print("Rule 3: After purchase you will go on a voyage, one of five random encounters will be drawn.")
+    print("Rule 4: Every encounter has a ship that matches it. If you have hired the matching ship, the voyage will succeed and that ships reputation will be earned.")
+    print("Rule 5: If you do not own the matching ship, the encounters penalty will land instead.")
+    print("Rule 6: You cannot spend more than you have. Reputation cant drop below 0. Reaching 30 reputation is a Win! Game will end after a win is achieved.")
+
+
+def dice_rules():
+    print("       Rules for Dice Duel")  # lists rules
+    print(DISPLAY_SINGLE_DIVID)
+    print("Rule 1: You may only bet doubloons you have currently!")
+    print("Rule 2: You start by rolling two die and try to get as close to 21 as possible!")
+    print("Rule 3: You can chose to roll again once as many times as you want with each adding to your previous rolls that turn! But be careful, going over 21 means you bust and lose!")
+    print("Rule 4: Ties result in a rival captain win. The only exception is if you both finish with a 21, you beat the rival captain! ")
+    print("Rule 5: Die rolls are equal to the number you roll, except rolling a 6 is counted as 10 towards your total.")
+    print("Rule 6: The rival captain always rolls after you have already gotten your total. ")
+    print("Rule 7: The rival captain keeps rolling until their score is 17 or more. ")
+    print("Rule 8: If you bust, the game ends. The rival captain will not roll as you lose as soon as you bust. ")
+    print("Rule 9: If the rival busts, you win! ")
 
 
 # Main flow of Control
