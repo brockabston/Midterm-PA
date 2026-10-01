@@ -88,17 +88,20 @@ def die_roll():
 
 def player_turn():
     player_score = die_roll() + die_roll()
-    print(f"Your current score is {player_score_score}")
+    print(f"Your current score is {player_score}")
     while player_score < 21:
         if yes_or_no("Roll again? (Yes/no): "):
             player_score = player_score + die_roll()
             print(f"Your new total score is {player_score}! ")
+            print(DISPLAY_SINGLE_DIVID)
         else:
             print(f"You decided to stand on {player_score}! ")
+            print(DISPLAY_SINGLE_DIVID)
             break
     if player_score > 21:
         print("You busted! You will get luckier next time!")
-    print(f"Final Score: {player_score}")
+    print(f"Your final Score: {player_score}")
+    print(DISPLAY_SINGLE_DIVID)
     return player_score
 
 
@@ -110,25 +113,27 @@ def opponent_turn():
         print("Your opponent is rolling again!")
         opponent_score = opponent_score + die_roll()
         print(f"Oppenent's score is now {opponent_score}")
+        print(DISPLAY_SINGLE_DIVID)
     if opponent_score == 21:
         print(f"Opponents Score: {opponent_score}, Uh Oh try and beat that! ")
     elif opponent_score > 21:
         print(f"Opponents Score: {opponent_score} , Your opponent busted!")
     else:
         print(f"Your opponents final roll total is {opponent_score}")
+        print(DISPLAY_DIVIDER)
     return opponent_score
 
 
-def die_winner(player_score, opponent_score):
-    if player_score > 21:
+def die_winner(player_score, opponent_score):  # decides winner of dice duel
+    if player_score > 21:  # player busts
         return False
-    elif opponent_score > 21:
+    elif opponent_score > 21:  # opponent busts
         return True
-    elif player_score == 21 and opponent_score == 21:
+    elif player_score == 21 and opponent_score == 21:  # you and opponent tie, so you win
         return True
-    elif player_score > opponent_score:
+    elif player_score > opponent_score:  # you beat opponent
         return True
-    else:
+    else:  # anything else is situations you lose in
         return False
 
 
@@ -138,7 +143,7 @@ def dice_duel(doubloons, reputation):
     print(DISPLAY_DIVIDER)
     show_score(doubloons, reputation)
     print(DISPLAY_SINGLE_DIVID)
-    print("      Rules for Dice Duel")
+    print("       Rules for Dice Duel")
     print(DISPLAY_SINGLE_DIVID)
     print("Rule 1: You may only bet doubloons you have currently!")
     print("Rule 2: You start by rolling two die and try to get as close to 21 as possible!")
@@ -149,15 +154,31 @@ def dice_duel(doubloons, reputation):
     print("Rule 7: The rival captain keeps rolling until their score is 17 or more. ")
     print("Rule 8: If you bust, the game ends. The rival captain will not roll as you lose as soon as you bust. ")
     print("Rule 9: If the rival busts, you win! ")
+    print(DISPLAY_SINGLE_DIVID)
+    print("Now that you've seen the rules, place your wager when you're ready to start!")
+    round_doubloons = doubloons
+    while True:
+        bet_amount = get_num("Place your wager: ", 1, doubloons)
+        player_score = player_turn()
+        if player_score > 21:
+            opponents_score = "DNR"  # DNR = Did not roll because player busted
+        else:
+            opponents_score = opponent_turn()
+        if die_winner(player_score, opponents_score):
+            doubloons = round_doubloons + bet_amount
+            print(f"You win! You gained {bet_amount} doubloons!")
+        else:
+            doubloons = round_doubloons - bet_amount
+            print(f"Your rival beat you. You lose {bet_amount} doubloons. ")
+        show_score(doubloons, reputation)
+        if game_over(doubloons, reputation):
+            break
+        if not yes_or_no("Want to play Dice Duel again? (yes/no)"):
+            break
+    return doubloons
 
 
 # Main flow of Control
-    # answer = yes_or_no("Test? (Yes/no): ")
-    # print("You got:", answer)
-    # for i in range(20):
-    #     print(die_roll())
-# result = opponent_turn()
-# for i in range(3):
-#     print(opponent_turn())
-dice_duel(12, 0)
+result = dice_duel(12, 0)
+print(result)
 main()
