@@ -2,6 +2,11 @@ import random
 # Constant menu dividers
 DISPLAY_DIVIDER = "=" * 40
 DISPLAY_SINGLE_DIVID = "-" * 40
+ships = [["sloop", 2, 4, "merchant convoy"],
+         ["brigantine", 3, 6, "naval patrol"],
+         ["frigate", 4, 8, "cursed fog"],
+         ["galleon", 5, 10, "rival armada"],
+         ["man-o-war", 6, 12, "the kraken"]]
 
 # Display function
 
@@ -191,5 +196,18 @@ def dice_duel(doubloons, reputation):  # main dice duel game function
     return doubloons
 
 
+def hire_the_fleet():
+    pass
+
+
+def show_ships():
+    print("#    Ship    Cost    Rep")
+    number = 1
+    for ship in ships:  # grabs each list and goes through and prints
+        print(f"{number}  {ship[0]}       {ship[1]}      {ship[2]}")
+        number = number + 1
+
+
 # Main flow of Control
+show_ships()
 main()
