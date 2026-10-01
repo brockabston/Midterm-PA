@@ -208,6 +208,26 @@ def show_ships():
         number = number + 1
 
 
+def hire_ships(doubloons):
+    while true:
+        want_amount = get_num(
+            "How many ships do you want to buy? (1-3): ", 1, 3)
+        owned_ships = []
+        cost = 0
+        for n in range(1, want_amount):
+            while True:
+                choice = get_num(f"Ship {n}: ", 1, 5)
+                if choice in owned_ships:
+                    print("You already have this ship, choose another one!")
+                else:
+                    break
+            owned_ships.append(choice)
+            cost = cost + choice
+        if cost <= doubloons:
+            return owned_ships, cost
+        print(
+            f"Your choices of ships are too expensive. It costs {cost} and you only have {doubloons}. Play more Dice duel to earn more doublooms!")
+
+
 # Main flow of Control
-show_ships()
 main()
