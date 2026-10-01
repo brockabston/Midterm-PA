@@ -132,6 +132,25 @@ def die_winner(player_score, opponent_score):
         return False
 
 
+def dice_duel(doubloons, reputation):
+    print(DISPLAY_DIVIDER)
+    print(f"     Welcome to dice duel Captain!")
+    print(DISPLAY_DIVIDER)
+    show_score(doubloons, reputation)
+    print(DISPLAY_SINGLE_DIVID)
+    print("      Rules for Dice Duel")
+    print(DISPLAY_SINGLE_DIVID)
+    print("Rule 1: You may only bet doubloons you have currently!")
+    print("Rule 2: You start by rolling two die and try to get as close to 21 as possible!")
+    print("Rule 3: You can chose to roll again once as many times as you want with each adding to your previous rolls that turn! But be careful, going over 21 means you bust and lose!")
+    print("Rule 4: Ties result in a rival captain win. The only exception is if you both finish with a 21, you beat the rival captain! ")
+    print("Rule 5: Die rolls are equal to the number you roll, except rolling a 6 is counted as 10 towards your total.")
+    print("Rule 6: The rival captain always rolls after you have already gotten your total. ")
+    print("Rule 7: The rival captain keeps rolling until their score is 17 or more. ")
+    print("Rule 8: If you bust, the game ends. The rival captain will not roll as you lose as soon as you bust. ")
+    print("Rule 9: If the rival busts, you win! ")
+
+
 # Main flow of Control
     # answer = yes_or_no("Test? (Yes/no): ")
     # print("You got:", answer)
@@ -140,10 +159,5 @@ def die_winner(player_score, opponent_score):
 # result = opponent_turn()
 # for i in range(3):
 #     print(opponent_turn())
-print(die_winner(22, 15))
-print(die_winner(18, 23))
-print(die_winner(21, 21))
-print(die_winner(19, 17))
-print(die_winner(18, 21))
-print(die_winner(19, 19))
+dice_duel(12, 0)
 main()
