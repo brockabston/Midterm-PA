@@ -164,20 +164,27 @@ def dice_duel(doubloons, reputation):  # main dice duel game function
             opponents_score = opponent_turn()
         # if die winner is true then that means the player won and gains wager. if false, opponent wins and wager is subtracted
         if die_winner(player_score, opponents_score):
-            doubloons = round_doubloons + bet_amount
+            doubloons = doubloons + bet_amount
             print(f"You win! You gained {bet_amount} doubloons!")
         else:
-            doubloons = round_doubloons - bet_amount
+            doubloons = doubloons - bet_amount
             print(f"Your rival beat you. You lose {bet_amount} doubloons. ")
         show_score(doubloons, reputation)
         if game_over(doubloons, reputation):  # checks to see if game ending conditions are true
             break
         # if no is said then it backs out
-        if not yes_or_no("Want to play Dice Duel again? (yes/no)"):
+        if not yes_or_no("Want to play Dice Duel again? (yes/no): "):
             break
+    print(DISPLAY_SINGLE_DIVID)
+    this_round = doubloons - round_doubloons
+    if this_round >= 0:
+        print(f"This round you gained {this_round} doubloons")
+    else:
+        print(f"Arghhh This round you lost {this_round} doubloons")
+    print(DISPLAY_SINGLE_DIVID)
+    show_score(doubloons, reputation)
     return doubloons
 
 
 # Main flow of Control
-
 main()
