@@ -28,13 +28,20 @@ def main():  # navigating main menu and making sure no incorrect inputs
         choice = input("Enter your choice: ").strip()
 
         if choice == "1":
-            print("Welcome to Dice Duel!")
+            # returns totals and updates them
+            doubloons = dice_duel(doubloons, reputation)
         elif choice == "2":
             print("Welcome to Hire the Fleet!")
-        elif choice == "3":
+        elif choice == "3":  # ends app
             print("Cya! Good luck on your journey, Captain!")
         else:
             print("Invalid selection, Please select 1, 2, or 3")
+        if reputation > 30:  # 30 or more reputation means you win and closes app
+            print("Congrats, You Won! Youre the best and coolest captain on the sea!!!")
+            break
+        elif doubloons <= 0:  # ends app if doubloons are 0 or less
+            print("Game over! You ran out of doubloons. Please restart and try again!")
+            break
 
 
 def show_score(doubloons, reputation):  # prints current score and reputation
@@ -72,10 +79,8 @@ def game_over(doubloons, reputation):
     else:
         return False
 
-# inported randomizer, return dice roll but rolling a 6 earns 10
 
-
-def die_roll():  # random number generator for dice rolls
+def die_roll():  # random number generator for dice rolls, inported randomizer, return dice roll nun but rolling a 6 earns 10
     roll = random.randint(1, 6)
     if roll == 6:
         return 10
