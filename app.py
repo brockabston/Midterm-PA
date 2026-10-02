@@ -1,20 +1,29 @@
 import random  # looked up how to random generate and had to use import
+
 # Constant menu dividers
 DISPLAY_DIVIDER = "=" * 40
 DISPLAY_SINGLE_DIVID = "-" * 40
-# def display_divider():
+# def display_divider():    #could work better
 #     print(""* 30)
 
+# List of ships and their matching name, price, rep, and random encounter
 ships = [["sloop", 2, 4, "merchant convoy"],  # Constant but had to use lowercase so inputs from user would match easier with .lower()
          ["brigantine", 3, 6, "naval patrol"],
          ["frigate", 4, 8, "cursed fog"],
          ["galleon", 5, 10, "rival armada"],
-         ["man-o-war", 6, 12, "the kraken"]]
+         ["man-o-war", 6, 12, "kraken"]]
 encounters = ["merchant convoy", "naval patrol",
               "cursed fog", "rival armada", "the kraken"]
+
+# COLORS
+RED = "\033[31m"
+GREEN = "\033[32m"
+YELLOW = "\033[33m"
+BLUE = "\033[34m"
+RESET = "\033[0m"  # Set back to white
+
+
 # Display function
-
-
 def display(doubloons, reputation):
     print(DISPLAY_DIVIDER)
     print("    Captain's Cove - Main Menu")
@@ -25,10 +34,10 @@ def display(doubloons, reputation):
     print("2. Hire the Fleet")
     print("3. Leave the Cove")
 
+
 # function for main menu
-
-
-def main():  # navigating main menu and making sure no incorrect inputs
+# navigating main menu and making sure no incorrect inputs
+def main():
     doubloons = 12
     reputation = 0
     choice = ""
@@ -58,11 +67,13 @@ def main():  # navigating main menu and making sure no incorrect inputs
             break
 
 
+# Prints score, rep, and current rank based on rep
 def show_score(doubloons, reputation):  # prints current score and reputation
     print(
         f"Doubloons: {doubloons}       Reputation: {reputation}       Rank: {rank_earned(reputation)}")
 
 
+# Makes sure answer is a real number, then makes sure it is in the range of what you currently have, if clears both then it return that choice
 def get_num(question, min, max):
     while True:
         choice = input(question).strip()
@@ -75,7 +86,8 @@ def get_num(question, min, max):
             return int(choice)
 
 
-def yes_or_no(question):    # yes no questions/making sure that the answer is a yes or no
+# yes no questions/making sure that the answer is a yes or no
+def yes_or_no(question):
     while True:
         choice = input(question).strip().lower()
 
@@ -95,7 +107,8 @@ def game_over(doubloons, reputation):
         return False
 
 
-def die_roll():  # random number generator for dice rolls, inported randomizer, return dice roll nun but rolling a 6 earns 10
+# random number generator for dice rolls, inported randomizer, return dice roll nun but rolling a 6 earns 10
+def die_roll():
     roll = random.randint(1, 6)
     if roll == 6:
         return 10
@@ -103,7 +116,8 @@ def die_roll():  # random number generator for dice rolls, inported randomizer, 
         return roll
 
 
-def player_turn():  # players turn, busts if players score is over 21, asks to roll again
+# players turn, busts if players score is over 21, asks to roll again
+def player_turn():
     player_score = die_roll() + die_roll()
     print(f"Your current score is {player_score}")
     while player_score < 21:
@@ -116,13 +130,14 @@ def player_turn():  # players turn, busts if players score is over 21, asks to r
             print(DISPLAY_SINGLE_DIVID)
             break
     if player_score > 21:
-        print("You busted! You will get luckier next time!")
+        print(f"{RED}You busted! You will get luckier next time!{RESET}")
     print(f"Your final Score: {player_score}")
     print(DISPLAY_SINGLE_DIVID)
     return player_score
 
 
-def opponent_turn():  # opponents turn, rolls till 17 or over
+# Opponents Turn, Rolls till at least 17
+def opponent_turn():
     opponent_score = die_roll()+die_roll()
     print(
         f"Your opponent rolled a {opponent_score} with their first two rolls! ")
@@ -141,7 +156,8 @@ def opponent_turn():  # opponents turn, rolls till 17 or over
     return opponent_score
 
 
-def die_winner(player_score, opponent_score):  # decides winner of dice duel
+# decides winner of dice duel
+def die_winner(player_score, opponent_score):
     if player_score > 21:  # player busts
         return False
     elif opponent_score > 21:  # opponent busts
@@ -154,7 +170,8 @@ def die_winner(player_score, opponent_score):  # decides winner of dice duel
         return False
 
 
-def dice_duel(doubloons, reputation):  # main dice duel game function
+# main dice duel game function
+def dice_duel(doubloons, reputation):
     print(DISPLAY_DIVIDER)
     print(f"     Welcome to dice duel {rank_earned(reputation)}!")
     print(DISPLAY_SINGLE_DIVID)
@@ -166,6 +183,7 @@ def dice_duel(doubloons, reputation):  # main dice duel game function
     print("Now that you've seen the rules, place your wager when you're ready to start!")
     round_doubloons = doubloons
     while True:
+
         # bet amount is pulling get num to make sure bet is in between min and max
         bet_amount = get_num("Place your wager: ", 1, doubloons)
         player_score = player_turn()  # gets player score
@@ -176,10 +194,11 @@ def dice_duel(doubloons, reputation):  # main dice duel game function
         # if die winner is true then that means the player won and gains wager. if false, opponent wins and wager is subtracted
         if die_winner(player_score, opponents_score):
             doubloons = doubloons + bet_amount
-            print(f"You win! You gained {bet_amount} doubloons!")
+            print(f"{GREEN}You win! You gained {bet_amount} doubloons!{RESET}")
         else:
             doubloons = doubloons - bet_amount
-            print(f"Your rival beat you. You lose {bet_amount} doubloons. ")
+            print(
+                f"{RED}Your rival beat you. You lose {bet_amount} doubloons. {RESET}")
         show_score(doubloons, reputation)
         if game_over(doubloons, reputation):  # checks to see if game ending conditions are true
             break
@@ -189,15 +208,16 @@ def dice_duel(doubloons, reputation):  # main dice duel game function
     print(DISPLAY_SINGLE_DIVID)
     this_round = doubloons - round_doubloons
     if this_round >= 0:
-        print(f"This round you gained {this_round} doubloons")
+        print(f"{GREEN}This round you gained {this_round} doubloons{RESET}")
     else:
-        print(f"Arghhh This round you lost {this_round} doubloons")
+        print(f"{RED}Arghhh This round you lost {this_round} doubloons{RESET}")
     print(DISPLAY_SINGLE_DIVID)
     show_score(doubloons, reputation)
     return doubloons
 
 
-def show_ships():  # prints list of ships
+# prints list of ships
+def show_ships():
     print("#    Ship          Cost        Rep")
     print(DISPLAY_SINGLE_DIVID)
     number = 1
@@ -208,6 +228,7 @@ def show_ships():  # prints list of ships
         number = number + 1
 
 
+# Asks how many ships you want, then
 def hire_ships(doubloons):
     while True:
         want_amount = get_num(
@@ -234,6 +255,7 @@ def hire_ships(doubloons):
             f"Your choices of ships are too expensive. It costs {cost} and you only have {doubloons}. Play more Dice duel to earn more doubloons!")
 
 
+# Prints Hire the Fleet rules
 def fleet_rules():
     print("Welcome to Hire The Fleet!")
     print(DISPLAY_SINGLE_DIVID)
@@ -245,6 +267,7 @@ def fleet_rules():
     print("Rule 6: You cannot spend more than you have. Reputation can't drop below 0. Reaching 30 reputation is a Win! Game will end after a win is achieved.")
 
 
+# Dice Roll rules
 def dice_rules():
     print("       Rules for Dice Duel")  # lists rules
     print(DISPLAY_SINGLE_DIVID)
@@ -259,6 +282,7 @@ def dice_rules():
     print("Rule 9: If the rival busts, you win! ")
 
 
+# Gives rank based on reputation
 def rank_earned(reputation):
     if reputation >= 25:
         return "Dread Captain"
@@ -274,8 +298,11 @@ def rank_earned(reputation):
         return "Deckhand"
 
 
+# Main hire the fleet function
 def hire_the_fleet(doubloons, reputation):
     fleet_rules()
+    start_doubloons = doubloons
+    start_rep = reputation
     print(DISPLAY_DIVIDER)
     while True:
         print()
@@ -283,17 +310,75 @@ def hire_the_fleet(doubloons, reputation):
         show_ships()
         print()
         owned_ships, cost = hire_ships(doubloons)
-        if owned_ships == []:
+
+        if owned_ships == []:       # if you chose zero in hire_ships, the owned ships list will be empty and break will put u back into the main function
             break
+
         doubloons = doubloons - cost
-        print(f"You own {owned_ships}")
-        encounter = random.randint(1, 5)
-        match encounter:
+        print(f"You own the following ships: ")
+        for choice in owned_ships:
+            print(ships[choice][0].title())
+        random_encounter = random.randint(1, 5)
+        encounter.title() == ""
+
+        match random_encounter:
             case 1:
-                print()
+                encounter = "merchant convoy"
+            case 2:
+                encounter = "naval patrol"
+            case 3:
+                encounter = "cursed fog"
+            case 4:
+                encounter = "rival armada"
+            case 5:
+                encounter = "kraken"
+        print(
+            f"Watch out {rank_earned(reputation)}, a random encounter is happening! ")
+        print(f"The {encounter.title()} has arrived!")
+        for ship in ships:
+            if ships[choice][3] == encounter:
+                reputation = reputation + ships[choice][2]
+                print("")
+            elif ships[choice] != encounter:
+                if encounter == "cursed fog":
+                    num = random.randint(1, 2)
+                    if num == 1:
+                        print(
+                            f"Wow {rank_earned(reputation)}, you earned 5 reputation in the Cursed Fog!")
+                        reputation = reputation + 5
+                    else:
+                        print(
+                            f"Uh oh {rank_earned(reputation)}, you lost 5 reputation in the Cursed Fog")
+                        reputation = reputation - 5
+                elif encounter == "merchant convoy":
+                    print("You saw a Merchant Convoy and waved at them!")
+                elif encounter == "naval patrol":
+                    doubloons = doubloons - 3
+                    fine = random.randint(1, 5)
+                    match fine:
+                        case 1:
+                            print(
+                                "The Naval Patrol stopped your ship and {RED}fined you 3 doubloons{RESET} for an ugly hat! ")
+                        case 2:
+                            print(
+                                "The Naval Patrol stopped your ship and {RED}fined you 3 doubloons{RESET} for having dusty cannons! ")
+                        case 3:
+                            print(
+                                "The Naval Patrol stopped your ship and {RED}fined you 3 doubloons{RESET} for having too many crew members!")
+                        case 4:
+                            print(
+                                "The Naval Patrol stopped your ship and {RED}fined you 3 doubloons{RESET} for having no treasure! ")
+                        case 5:
+                            print(
+                                f"The Naval Patrol stopped your ship and {RED}fined you 3 doubloons{RESET} for killing the king! You are lucky they did not arrest you!")
+                elif encounter == "rival armada":
+                    print("Oh no a Rival Armada stole 5 reputation from you!")
+                    reputation = reputation - 5
+                else:
+                    print(
+                        f" The skies get dark and the waters become black and rough. Oh no {rank_earned(reputation)}, {RED}The Kraken{RESET} approaches")
+                    print("")
 
 
 # Main flow of Control
-
-
 main()
