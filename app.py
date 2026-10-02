@@ -37,13 +37,17 @@ def main():  # navigating main menu and making sure no incorrect inputs
         choice = input("Enter your choice: ").strip()
 
         if choice == "1":
-            # returns totals and updates them
+            # returns game totals and updates them
             doubloons = dice_duel(doubloons, reputation)
         elif choice == "2":
+            for i in range(5):
+                print()
+            print(DISPLAY_DIVIDER)
             print("Welcome to Hire the Fleet!")
+            print(DISPLAY_DIVIDER)
             show_ships()
         elif choice == "3":  # ends app
-            print("Cya! Good luck on your journey, Captain!")
+            print(f"Cya! Good luck on your journey, {rank_earned} !")
         else:
             print("Invalid selection, Please select 1, 2, or 3")
         if reputation > 30:  # 30 or more reputation means you win and closes app
@@ -55,7 +59,8 @@ def main():  # navigating main menu and making sure no incorrect inputs
 
 
 def show_score(doubloons, reputation):  # prints current score and reputation
-    print(f"Doubloons: {doubloons}       Reputation: {reputation}")
+    print(
+        f"Doubloons: {doubloons}       Reputation: {reputation}       Rank: {rank_earned(reputation)}")
 
 
 def get_num(question, min, max):
@@ -151,7 +156,7 @@ def die_winner(player_score, opponent_score):  # decides winner of dice duel
 
 def dice_duel(doubloons, reputation):  # main dice duel game function
     print(DISPLAY_DIVIDER)
-    print(f"     Welcome to dice duel Captain!")
+    print(f"     Welcome to dice duel {rank_earned(reputation)}!")
     print(DISPLAY_SINGLE_DIVID)
     show_score(doubloons, reputation)
     print(DISPLAY_SINGLE_DIVID)
@@ -192,10 +197,6 @@ def dice_duel(doubloons, reputation):  # main dice duel game function
     return doubloons
 
 
-def hire_the_fleet(doubloons, reputation):
-    fleet_rules()
-
-
 def show_ships():  # prints list of ships
     print("#    Ship          Cost        Rep")
     print(DISPLAY_SINGLE_DIVID)
@@ -211,8 +212,8 @@ def hire_ships(doubloons):
     while True:
         want_amount = get_num(
             "How many ships do you want to buy? (1-3 or 0 to return to menu): ", 0, 3)
-        if want_amount == 0:  # escape back to menu if youre out of coins or dont want to buy ship
-            return [], 0  # had to look up how to return something but have no value without returning "none", was breaking my code over and over
+        if want_amount == 0:  # escape back to menu if you do not own ships
+            return [], 0  # had to look up how to get it no return empty without returning "none", was breaking my code over and over with just return
         owned_ships = []
         cost = 0
         # +1 allows it to see that number. without it would stop before the want amount #
@@ -226,7 +227,7 @@ def hire_ships(doubloons):
                 else:
                     break
             owned_ships.append(choice)  # puts your choice in owned ships
-            cost = cost + ships[choice][1]
+            cost = cost + ships[choice][1]  # grabs your choice's price
         if cost <= doubloons:
             return owned_ships, cost
         print(
@@ -241,7 +242,7 @@ def fleet_rules():
     print("Rule 3: After purchase you will go on a voyage, one of five random encounters will be drawn.")
     print("Rule 4: Every encounter has a ship that matches it. If you have hired the matching ship, the voyage will succeed and that ships reputation will be earned.")
     print("Rule 5: If you do not own the matching ship, the encounters penalty will land instead.")
-    print("Rule 6: You cannot spend more than you have. Reputation cant drop below 0. Reaching 30 reputation is a Win! Game will end after a win is achieved.")
+    print("Rule 6: You cannot spend more than you have. Reputation can't drop below 0. Reaching 30 reputation is a Win! Game will end after a win is achieved.")
 
 
 def dice_rules():
@@ -258,5 +259,41 @@ def dice_rules():
     print("Rule 9: If the rival busts, you win! ")
 
 
+def rank_earned(reputation):
+    if reputation >= 25:
+        return "Dread Captain"
+    elif reputation >= 20:
+        return "Vice Captain"
+    elif reputation >= 15:
+        return "Buccaneer"
+    elif reputation >= 10:
+        return "Scallywag"
+    elif reputation >= 5:
+        return "Sea Dog"
+    else:
+        return "Deckhand"
+
+
+def hire_the_fleet(doubloons, reputation):
+    fleet_rules()
+    print(DISPLAY_DIVIDER)
+    while True:
+        print()
+        print()
+        show_ships()
+        print()
+        owned_ships, cost = hire_ships(doubloons)
+        if owned_ships == []:
+            break
+        doubloons = doubloons - cost
+        print(f"You own {owned_ships}")
+        encounter = random.randint(1, 5)
+        match encounter:
+            case 1:
+                print()
+
+
 # Main flow of Control
+
+
 main()
