@@ -3,25 +3,25 @@ import random  # looked up how to random generate and had to use import
 # Constant menu dividers
 DISPLAY_DIVIDER = "=" * 40
 DISPLAY_SINGLE_DIVID = "-" * 40
-
-
-def big_space():
-    for i in (10):
-        print()
 # def display_divider():    #could work better
 #     print(""* 30)
 
 
+def big_space():
+    for i in range(10):
+        print()
+
+
 # List of ships and their matching name, price, rep, and random encounter
-ships = [["sloop", 2, 4, "merchant convoy"],  # Constant but had to use lowercase so inputs from user would match easier with .lower()
+ships = [["sloop", 2, 4, "merchant convoy"],
          ["brigantine", 3, 6, "naval patrol"],
          ["frigate", 4, 8, "cursed fog"],
          ["galleon", 5, 10, "rival armada"],
-         ["man-o-war", 6, 12, "kraken"]]
+         ["man-o-war", 6, 12, "the kraken"]]
 encounters = ["merchant convoy", "naval patrol",
               "cursed fog", "rival armada", "the kraken"]
 
-# COLORS
+# COLORS (looked up how to make text different colors)
 RED = "\033[31m"
 GREEN = "\033[32m"
 YELLOW = "\033[33m"
@@ -29,7 +29,7 @@ BLUE = "\033[34m"
 RESET = "\033[0m"  # Set back to white
 
 
-# Display function
+# Display function for main menu
 def display(doubloons, reputation):
     print(DISPLAY_DIVIDER)
     print("    Captain's Cove - Main Menu")
@@ -62,8 +62,11 @@ def main():
             print(f"Cya! Good luck on your journey! ")
         else:
             print("Invalid selection, Please select 1, 2, or 3")
-        if reputation > 30:  # 30 or more reputation means you win and closes app
-            print("Congrats, You Won! Youre the best and coolest captain on the sea!!!")
+        if reputation >= 30:  # 30 or more reputation means you win and closes app
+            print(DISPLAY_SINGLE_DIVID)
+            print(
+                f"{GREEN}Congrats, You Won! Youre the best and coolest captain on the sea!!!{RESET}")
+            print(DISPLAY_SINGLE_DIVID)
             break
         elif doubloons <= 0:  # ends app if doubloons are 0 or less
             print(
@@ -214,7 +217,7 @@ def dice_duel(doubloons, reputation):
     if this_round >= 0:
         print(f"{GREEN}This round you gained {this_round} doubloons{RESET}")
     else:
-        print(f"{RED}Arghhh This round you lost {this_round} doubloons{RESET}")
+        print(f"{RED}Arghhh session you lost {-this_round} doubloons{RESET}")
     print(DISPLAY_SINGLE_DIVID)
     show_score(doubloons, reputation)
     return doubloons
@@ -269,6 +272,7 @@ def fleet_rules():
     print("Rule 4: Every encounter has a ship that matches it. If you have hired the matching ship, the voyage will succeed and that ships reputation will be earned.")
     print("Rule 5: If you do not own the matching ship, the encounters penalty will land instead.")
     print("Rule 6: You cannot spend more than you have. Reputation can't drop below 0. Reaching 30 reputation is a Win! Game will end after a win is achieved.")
+    print(f"Rule 7: {BLUE}Your ships are only for that voyage! After the Voyage your ships will reset back to none! {RESET}")
 
 
 # Dice Roll rules
@@ -325,7 +329,8 @@ def hire_the_fleet(doubloons, reputation):
         for choice in owned_ships:
             print(ships[choice][0].title())
         print(
-            f"After buying ships you have: {show_score(doubloons, reputation)}")
+            f"After buying ships you have: ")
+        show_score(doubloons, reputation)
         random_encounter = random.randint(1, 5)
         encounter = ""
 
@@ -349,7 +354,7 @@ def hire_the_fleet(doubloons, reputation):
                 encounter_match = True
                 reputation = reputation + ships[choice][2]
                 print(
-                    f"Your {ships[choice][0].title()} dealt with the encounter! You have gained {ships[choice][2]} reputation")
+                    f"{GREEN} Your {ships[choice][0].title()} dealt with the encounter! You have gained {ships[choice][2]} reputation{RESET}")
         if not encounter_match:
             if encounter == "cursed fog":
                 num = random.randint(1, 2)
@@ -362,29 +367,29 @@ def hire_the_fleet(doubloons, reputation):
                         f"Uh oh {rank_earned(reputation)}, you lost 5 reputation in the Cursed Fog")
                     reputation = reputation - 5
             elif encounter == "merchant convoy":
-                print("You saw a Merchant Convoy and waved at them!")
+                print(f"{GREEN} You saw a Merchant Convoy and waved at them!{RESET}")
             elif encounter == "naval patrol":
                 doubloons = doubloons - 3
                 fine = random.randint(1, 5)
                 match fine:
                     case 1:
                         print(
-                            f"The Naval Patrol stopped your ship and {RED}fined you 3 doubloons{RESET} for an ugly hat! ")
+                            f"{RED}The Naval Patrol stopped your ship and fined you 3 doubloons for an ugly hat! {RESET}")
                     case 2:
                         print(
-                            f"The Naval Patrol stopped your ship and {RED}fined you 3 doubloons{RESET} for having dusty cannons! ")
+                            f"{RED}The Naval Patrol stopped your ship and fined you 3 doubloons for having dusty cannons! {RESET}")
                     case 3:
                         print(
-                            f"The Naval Patrol stopped your ship and {RED}fined you 3 doubloons{RESET} for having too many crew members!")
+                            f"{RED}The Naval Patrol stopped your ship and fined you 3 doubloons for having too many crew members!{RESET}")
                     case 4:
                         print(
-                            f"The Naval Patrol stopped your ship and {RED}fined you 3 doubloons{RESET} for having no treasure! ")
+                            f"{RED}The Naval Patrol stopped your ship and fined you 3 doubloons for having no treasure! {RESET}")
                     case 5:
                         print(
-                            f"The Naval Patrol stopped your ship and {RED}fined you 3 doubloons{RESET} for killing the king! You are lucky they did not arrest you!")
+                            f"{RED}The Naval Patrol stopped your ship and fined you 3 doubloons for killing the king! You are lucky they did not arrest you!{RESET}")
             elif encounter == "rival armada":
                 print(
-                    f"Oh no a Rival Armada {RED}stole 5 reputation from you!{RESET}")
+                    f"{RED}Oh no a Rival Armada stole 5 reputation from you!{RESET}")
                 reputation = reputation - 5
             else:
                 print(
@@ -399,9 +404,10 @@ def hire_the_fleet(doubloons, reputation):
             break
         if not yes_or_no("Would you like to keep sailing? (yes/no): "):
             break
+    print(DISPLAY_SINGLE_DIVID)
     print(
-        f"Voyage Over! Session earnings: {doubloons - start_doubloons} doubloons, {reputation - start_rep} reputation")
-    show_score(doubloons, reputation)
+        f"Voyage Over! Session earnings: {doubloons - start_doubloons:+} doubloons, {reputation - start_rep:+} reputation")
+    print(DISPLAY_SINGLE_DIVID)
     return doubloons, reputation
 
 
