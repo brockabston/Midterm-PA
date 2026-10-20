@@ -53,7 +53,7 @@ def main():
 
         if choice == "1":
             # returns game totals and updates them
-            doubloons = dice_duel(doubloons, reputation)
+            doubloons, reputation = dice_duel(doubloons, reputation)
         elif choice == "2":
             for i in range(5):
                 print()
@@ -125,15 +125,23 @@ def die_roll():
 
 # players turn, busts if players score is over 21, asks to roll again
 def player_turn():
-    player_score = die_roll() + die_roll()
-    print(f"Your current score is {player_score}")
+    die1 = die_roll()
+    die2 = die_roll()
+    rolls = [die1, die2]
+    player_score = die1 + die2
+    print(f"{BLUE}Your rolls this round: {rolls}  Total: {player_score}{RESET}")
     while player_score < 21:
         if yes_or_no("Roll again? (Yes/no): "):
-            player_score = player_score + die_roll()
-            print(f"Your new total score is {player_score}! ")
+            roll = die_roll()
+            rolls.append(roll)
+            player_score = player_score + roll
+            print(f"{BLUE} You rolled a {roll}!! {RESET}")
+            print(
+                f"{BLUE}Your rolls this rounds: {rolls} Total: {player_score}! {RESET}")
             print(DISPLAY_SINGLE_DIVID)
         else:
-            print(f"You decided to stand on {player_score}! ")
+            print(
+                f"{BLUE}You decided to stand on {player_score}! Rolls this round: {rolls} {RESET} ")
             print(DISPLAY_SINGLE_DIVID)
             break
     if player_score > 21:
@@ -145,13 +153,19 @@ def player_turn():
 
 # Opponents Turn, Rolls till at least 17
 def opponent_turn():
-    opponent_score = die_roll()+die_roll()
+    die1 = die_roll()
+    die2 = die_roll()
+    rolls = [die1, die2]
+    opponent_score = die1 + die2
     print(
-        f"Your opponent rolled a {opponent_score} with their first two rolls! ")
+        f"{RED}Opponent's Rolls: {rolls} Total: {opponent_score}{RED}")
     while opponent_score < 17:
         print("Your opponent is rolling again!")
-        opponent_score = opponent_score + die_roll()
-        print(f"Oppenent's score is now {opponent_score}")
+        roll = die_roll()
+        rolls.append(roll)
+        opponent_score = opponent_score + roll
+        print(f"{RED}Your opponent rolled a {roll}!{RESET}")
+        print(f"Opponents Rolls: {rolls}    Total: {opponent_score}")
         print(DISPLAY_SINGLE_DIVID)
     if opponent_score == 21:
         print(f"Opponents Score: {opponent_score}, Uh Oh try and beat that! ")
@@ -195,7 +209,8 @@ def dice_duel(doubloons, reputation):
         bet_amount = get_num("Place your wager: ", 1, doubloons)
         player_score = player_turn()  # gets player score
         if player_score > 21:  # checks if bust
-            opponents_score = "DNR"  # DNR = Did not roll because player busted
+            # (DNR = Did not roll because player buste) --- This is changed to 0 when player busts now from update comments
+            opponents_score = 0
         else:
             opponents_score = opponent_turn()
         # if die winner is true then that means the player won and gains wager. if false, opponent wins and wager is subtracted
@@ -220,7 +235,7 @@ def dice_duel(doubloons, reputation):
         print(f"{RED}Arghhh session you lost {-this_round} doubloons{RESET}")
     print(DISPLAY_SINGLE_DIVID)
     show_score(doubloons, reputation)
-    return doubloons
+    return doubloons, reputation
 
 
 # prints list of ships
