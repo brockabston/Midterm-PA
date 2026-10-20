@@ -1,4 +1,5 @@
 import random  # looked up how to random generate and had to use import
+import os  # looked up a how to clear screen after reading feedback to clear it. importing OS to use the right clear command for the right os
 
 # Constant menu dividers
 DISPLAY_DIVIDER = "=" * 40
@@ -29,6 +30,17 @@ BLUE = "\033[34m"
 RESET = "\033[0m"  # Set back to white
 
 
+def clear_screen():
+    # looked up how to match the OS for how to enter the correct clear, figured out that clear works in powershell but not the terminal
+    os.system("cls" if os.name == "nt" else "clear")
+
+
+def pause():
+    # makes player hit enter key to start next step then clears the screen for next menu
+    input("Press Enter to continue:    ")
+    clear_screen()
+
+
 # Display function for main menu
 def display(doubloons, reputation):
     print(DISPLAY_DIVIDER)
@@ -55,8 +67,6 @@ def main():
             # returns game totals and updates them
             doubloons, reputation = dice_duel(doubloons, reputation)
         elif choice == "2":
-            for i in range(5):
-                print()
             doubloons, reputation = hire_the_fleet(doubloons, reputation)
         elif choice == "3":  # ends app
             print(f"Cya! Good luck on your journey! ")
@@ -193,15 +203,17 @@ def die_winner(player_score, opponent_score):
 
 # main dice duel game function
 def dice_duel(doubloons, reputation):
+    pause()
     print(DISPLAY_DIVIDER)
     print(f"     Welcome to dice duel {rank_earned(reputation)}!")
-    print(DISPLAY_SINGLE_DIVID)
+    print(DISPLAY_DIVIDER)
     show_score(doubloons, reputation)
     print(DISPLAY_SINGLE_DIVID)
-    print()
     dice_rules()
     print(DISPLAY_SINGLE_DIVID)
-    print("Now that you've seen the rules, place your wager when you're ready to start!")
+    pause()
+    clear_screen()
+    print(f"{BLUE}Now that you've seen the rules, place your wager when you're ready to start!{RESET}")
     round_doubloons = doubloons
     while True:
 
@@ -209,8 +221,8 @@ def dice_duel(doubloons, reputation):
         bet_amount = get_num("Place your wager: ", 1, doubloons)
         player_score = player_turn()  # gets player score
         if player_score > 21:  # checks if bust
-            # (DNR = Did not roll because player buste) --- This is changed to 0 when player busts now from update comments
-            opponents_score = 0
+            # (DNR = Did not roll because player busted) --- This is changed to -1 when player busts now from feedback comments
+            opponents_score = -1
         else:
             opponents_score = opponent_turn()
         # if die winner is true then that means the player won and gains wager. if false, opponent wins and wager is subtracted
@@ -235,6 +247,7 @@ def dice_duel(doubloons, reputation):
         print(f"{RED}Arghhh session you lost {-this_round} doubloons{RESET}")
     print(DISPLAY_SINGLE_DIVID)
     show_score(doubloons, reputation)
+    pause()
     return doubloons, reputation
 
 
@@ -253,8 +266,18 @@ def show_ships():
 # Asks how many ships you want, then
 def hire_ships(doubloons):
     while True:
+        if doubloons >= 9:  # cheapest combos for the amount of ships you can buy: Sloop = 2, Sloop + brigantine = 5, Sloop + Brigantine + Frigate = 9
+            max_ships = 3
+        elif doubloons >= 5:
+            max_ships = 2
+        elif doubloons >= 2:
+            max_ships = 1
+        else:
+            print(
+                f"{RED}You can't afford any ships! Go Win some doubloons in Dice Duel!{RESET}")
+            return [], 0
         want_amount = get_num(
-            "How many ships do you want to buy? (1-3 or 0 to return to menu): ", 0, 3)
+            f"How many ships do you want to buy? (1-{max_ships} or 0 to return to menu): ", 0, max_ships)
         if want_amount == 0:  # escape back to menu if you do not own ships
             return [], 0  # had to look up how to get it no return empty without returning "none", was breaking my code over and over with just return
         owned_ships = []
@@ -281,28 +304,29 @@ def hire_ships(doubloons):
 def fleet_rules():
     print("Welcome to Hire The Fleet!")
     print(DISPLAY_SINGLE_DIVID)
-    print("Rule 1: Displays five different available ships for hire including purchase cost and reputation earned from voyage.")
-    print("Rule 2: Hire one, two, or three different ships and pay every hire fee up front.")
-    print("Rule 3: After purchase you will go on a voyage, one of five random encounters will be drawn.")
-    print("Rule 4: Every encounter has a ship that matches it. If you have hired the matching ship, the voyage will succeed and that ships reputation will be earned.")
-    print("Rule 5: If you do not own the matching ship, the encounters penalty will land instead.")
-    print("Rule 6: You cannot spend more than you have. Reputation can't drop below 0. Reaching 30 reputation is a Win! Game will end after a win is achieved.")
-    print(f"Rule 7: {BLUE}Your ships are only for that voyage! After the Voyage your ships will reset back to none! {RESET}")
+    print(f"{BLUE}Rule 1: Displays five different available ships for hire including purchase cost and reputation earned from voyage.")
+    print(f"Rule 2: Hire one, two, or three different ships and pay every hire fee up front.")
+    print(f"Rule 3: After purchase you will go on a voyage, one of five random encounters will be drawn.")
+    print(f"Rule 4: Every encounter has a ship that matches it. If you have hired the matching ship, the voyage will succeed and that ships reputation will be earned.")
+    print(f"Rule 5: If you do not own the matching ship, the encounters penalty will land instead.")
+    print(
+        f"Rule 6: You cannot spend more than you have. Reputation can't drop below 0. Reaching 30 reputation is a Win! Game will end after a win is achieved.{RESET}")
+    print(f"{RED}Rule 7: Your ships are only for that voyage! After the Voyage your ships will reset back to none! {RESET}")
 
 
 # Dice Roll rules
 def dice_rules():
     print("       Rules for Dice Duel")  # lists rules
     print(DISPLAY_SINGLE_DIVID)
-    print("Rule 1: You may only bet doubloons you have currently!")
-    print("Rule 2: You start by rolling two die and try to get as close to 21 as possible!")
-    print("Rule 3: You can chose to roll again once as many times as you want with each adding to your previous rolls that turn! But be careful, going over 21 means you bust and lose!")
-    print("Rule 4: Ties result in a rival captain win. The only exception is if you both finish with a 21, you beat the rival captain! ")
-    print("Rule 5: Die rolls are equal to the number you roll, except rolling a 6 is counted as 10 towards your total.")
-    print("Rule 6: The rival captain always rolls after you have already gotten your total. ")
-    print("Rule 7: The rival captain keeps rolling until their score is 17 or more. ")
-    print("Rule 8: If you bust, the game ends. The rival captain will not roll as you lose as soon as you bust. ")
-    print("Rule 9: If the rival busts, you win! ")
+    print(f"{BLUE}Rule 1: You may only bet doubloons you have currently!")
+    print(f"Rule 2: You start by rolling two die and try to get as close to 21 as possible!")
+    print(f"Rule 3: You can chose to roll again once as many times as you want with each adding to your previous rolls that turn! But be careful, going over 21 means you bust and lose!")
+    print(f"Rule 4: Ties result in a rival captain win. The only exception is if you both finish with a 21, you beat the rival captain! ")
+    print(f"Rule 5: Die rolls are equal to the number you roll, except rolling a 6 is counted as 10 towards your total.")
+    print(f"Rule 6: The rival captain always rolls after you have already gotten your total. ")
+    print(f"Rule 7: The rival captain keeps rolling until their score is 17 or more. ")
+    print(f"Rule 8: If you bust, the game ends. The rival captain will not roll as you lose as soon as you bust. ")
+    print(f"Rule 9: If the rival busts, you win! {RESET}")
 
 
 # Gives rank based on reputation
@@ -323,6 +347,12 @@ def rank_earned(reputation):
 
 # Main hire the fleet function
 def hire_the_fleet(doubloons, reputation):
+    if doubloons < 2:
+        print(
+            f"{RED}You can't afford any ships matey! Go Win some doubloons in Dice Duel!{RESET}")
+        pause()
+        return doubloons, reputation
+    clear_screen()
     fleet_rules()
     start_doubloons = doubloons
     start_rep = reputation
