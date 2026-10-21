@@ -1,9 +1,10 @@
 import random  # looked up how to random generate and had to use import
 import os  # looked up a how to clear screen after reading feedback to clear it. importing OS to use the right clear command for the right os
 
-# Constant menu dividers
-DISPLAY_DIVIDER = "=" * 40
-DISPLAY_SINGLE_DIVID = "-" * 40
+# Constant menu dividers    #look up how to center the code so it looks cleaner, makes divider equal
+WIDTH = 50
+DISPLAY_DIVIDER = "=" * WIDTH
+DISPLAY_SINGLE_DIVID = "-" * WIDTH
 # def display_divider():    #could work better
 #     print(""* 30)
 
@@ -36,7 +37,7 @@ def clear_screen():
 
 
 def pause():
-    # makes player hit enter key to start next step then clears the screen for next menu
+    # makes player hit the enter key to start next step then clears the screen for next menu
     input("Press Enter to continue:    ")
     clear_screen()
 
@@ -44,9 +45,9 @@ def pause():
 # Display function for main menu
 def display(doubloons, reputation):
     print(DISPLAY_DIVIDER)
-    print("    Captain's Cove - Main Menu")
+    print("Captain's Cove - Main Menu".center(WIDTH))
     print(DISPLAY_DIVIDER)
-    print(f"    Doubloons: {doubloons}   Reputation: {reputation}")
+    print(f"Doubloons: {doubloons}   Reputation: {reputation}")
     print(DISPLAY_SINGLE_DIVID)
     print("1. Dice Duel")
     print("2. Hire the Fleet")
@@ -80,7 +81,7 @@ def main():
             break
         elif doubloons <= 0:  # ends app if doubloons are 0 or less
             print(
-                f"{BLUE}Game over! You ran out of doubloons. Please restart and try again!{RESET}")
+                f"{RED}Game over! You ran out of doubloons. Please restart and try again!{RESET}")
             break
 
 
@@ -204,8 +205,8 @@ def die_winner(player_score, opponent_score):
 # main dice duel game function
 def dice_duel(doubloons, reputation):
     pause()
-    print(DISPLAY_DIVIDER)
-    print(f"     Welcome to dice duel {rank_earned(reputation)}!")
+    print(DISPLAY_DIVIDER)  # prints header
+    print(f"Welcome to dice duel {rank_earned(reputation)}!".center(WIDTH))
     print(DISPLAY_DIVIDER)
     show_score(doubloons, reputation)
     print(DISPLAY_SINGLE_DIVID)
@@ -244,7 +245,7 @@ def dice_duel(doubloons, reputation):
     if this_round >= 0:
         print(f"{GREEN}This round you gained {this_round} doubloons{RESET}")
     else:
-        print(f"{RED}Arghhh session you lost {-this_round} doubloons{RESET}")
+        print(f"{RED}Arghhh this session you lost {-this_round} doubloons{RESET}")
     print(DISPLAY_SINGLE_DIVID)
     show_score(doubloons, reputation)
     pause()
@@ -253,13 +254,11 @@ def dice_duel(doubloons, reputation):
 
 # prints list of ships
 def show_ships():
-    print("#    Ship          Cost        Rep")
+    print(f"{'#':^6}{'Ship':^16}{'Cost':^14}{'Rep':>14}")
     print(DISPLAY_SINGLE_DIVID)
     number = 1
-    for ship in ships:  # grabs each list and goes through and prints
-        # print(f"{number}  {ship[0]}       {ship[1]}      {ship[2]}")       #original
-        # looked up how to allign and format code.
-        print(f"{number:<5}{ship[0]:<15}{ship[1]:<12}{ship[2]}")
+    for ship in ships:  # grabs each list and goes through and prints   #looked up and found that :^0 centers that item in its column   #
+        print(f"{number:^6}{ship[0].title():^16}{ship[1]:^14}{ship[2]:^14}")
         number = number + 1
 
 
@@ -312,6 +311,7 @@ def fleet_rules():
     print(
         f"Rule 6: You cannot spend more than you have. Reputation can't drop below 0. Reaching 30 reputation is a Win! Game will end after a win is achieved.{RESET}")
     print(f"{RED}Rule 7: Your ships are only for that voyage! After the Voyage your ships will reset back to none! {RESET}")
+    print(f"{GREEN}Ready to play?{RESET}")
 
 
 # Dice Roll rules
@@ -354,13 +354,14 @@ def hire_the_fleet(doubloons, reputation):
         return doubloons, reputation
     clear_screen()
     fleet_rules()
+    pause()
     start_doubloons = doubloons
     start_rep = reputation
-    print(DISPLAY_DIVIDER)
     while True:
-        print()
-        print()
-        print("Your current Doubloons and Reputation:")
+        print(DISPLAY_DIVIDER)
+        print("Harbor Shop".center(WIDTH))
+        print(DISPLAY_DIVIDER)
+        print("Your current Doubloons and Reputation".center(WIDTH))
         show_score(doubloons, reputation)
         show_ships()
         print()
@@ -453,6 +454,7 @@ def hire_the_fleet(doubloons, reputation):
     print(
         f"Voyage Over! Session earnings: {doubloons - start_doubloons:+} doubloons, {reputation - start_rep:+} reputation")
     print(DISPLAY_SINGLE_DIVID)
+    pause()
     return doubloons, reputation
 
 
