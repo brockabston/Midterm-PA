@@ -1,5 +1,6 @@
 import random  # looked up how to random generate and had to use import
 import os  # looked up a how to clear screen after reading feedback to clear it. importing OS to use the right clear command for the right os
+import textwrap  # looked up and found out that you could use text wrap in python by importing it. Used this for my rules formatting
 
 # Constant menu dividers    #look up how to center the code so it looks cleaner, makes divider equal
 WIDTH = 50
@@ -57,6 +58,7 @@ def display(doubloons, reputation):
 # function for main menu
 # navigating main menu and making sure no incorrect inputs
 def main():
+    clear_screen()
     doubloons = 12
     reputation = 0
     choice = ""
@@ -72,7 +74,8 @@ def main():
         elif choice == "3":  # ends app
             print(f"Cya! Good luck on your journey! ")
         else:
-            print("Invalid selection, Please select 1, 2, or 3")
+            clear_screen()
+            print(f"{RED}Invalid selection, Please select 1, 2, or 3{RESET}")
         if reputation >= 30:  # 30 or more reputation means you win and closes app
             print(DISPLAY_SINGLE_DIVID)
             print(
@@ -87,8 +90,10 @@ def main():
 
 # Prints score, rep, and current rank based on rep
 def show_score(doubloons, reputation):  # prints current score and reputation
-    print(
-        f"Doubloons: {doubloons}       Reputation: {reputation}       Rank: {rank_earned(reputation)}")
+    # variable for score lineup
+    line = f"Doubloons: {doubloons}   Reputation: {reputation}   Rank: {rank_earned(reputation)}"
+    # makes the variable even on both sides by centering with blank characters within the width
+    print(line.center(WIDTH))
 
 
 # Makes sure answer is a real number, then makes sure it is in the range of what you currently have, if clears both then it return that choice
@@ -254,15 +259,16 @@ def dice_duel(doubloons, reputation):
 
 # prints list of ships
 def show_ships():
-    print(f"{'#':^6}{'Ship':^16}{'Cost':^14}{'Rep':>14}")
+    print(f"{'#':^6}{'Ship':^16}{'Cost':^14}{'Rep':^14}")
     print(DISPLAY_SINGLE_DIVID)
     number = 1
     for ship in ships:  # grabs each list and goes through and prints   #looked up and found that :^0 centers that item in its column   #
         print(f"{number:^6}{ship[0].title():^16}{ship[1]:^14}{ship[2]:^14}")
         number = number + 1
+    print(DISPLAY_SINGLE_DIVID)
 
 
-# Asks how many ships you want, then
+# Asks how many ships you want, then returns bought ships and money spent
 def hire_ships(doubloons):
     while True:
         if doubloons >= 9:  # cheapest combos for the amount of ships you can buy: Sloop = 2, Sloop + brigantine = 5, Sloop + Brigantine + Frigate = 9
@@ -300,18 +306,35 @@ def hire_ships(doubloons):
 
 
 # Prints Hire the Fleet rules
+# puts rules into a list to be able to use
 def fleet_rules():
-    print("Welcome to Hire The Fleet!")
+    rules = [
+        "Displays five different available ships for hire including purchase cost and reputation earned from voyage.",
+        "Hire one, two, or three different ships and pay every hire fee up front.",
+        "After purchase you will go on a voyage, one of five random encounters will be drawn.",
+        "Every encounter has a ship that matches it. If you have hired the matching ship, the voyage will succeed and that ships reputation will be earned.",
+        "If you do not own the matching ship, the encounters penalty will land instead.",
+        "You cannot spend more than you have. Reputation can't drop below 0. Reaching 30 reputation is a Win! Game will end after a win is achieved.",
+        "Your ships are only for that voyage! After the Voyage your ships will reset back to none!",
+    ]
+    print(DISPLAY_DIVIDER)
+    print("Welcome to Hire The Fleet!".center(WIDTH))  # Centers title
+    print(DISPLAY_DIVIDER)
+    num = 1  # Set first rule to one as the count
+    # Thought to make the colors easier to all make blue except my last one in the rule list which is important(Red)
+    for rule in rules:
+        if num == len(rules):
+            color = RED
+        else:
+            color = BLUE
+            # wraps text between my preset width
+        wrapped_text = textwrap.fill(
+            f"Rule {num}. {rule}", width=WIDTH, subsequent_indent="   ")
+        print(f"{color}{wrapped_text}{RESET}")
+        print()
+        num = num + 1
     print(DISPLAY_SINGLE_DIVID)
-    print(f"{BLUE}Rule 1: Displays five different available ships for hire including purchase cost and reputation earned from voyage.")
-    print(f"Rule 2: Hire one, two, or three different ships and pay every hire fee up front.")
-    print(f"Rule 3: After purchase you will go on a voyage, one of five random encounters will be drawn.")
-    print(f"Rule 4: Every encounter has a ship that matches it. If you have hired the matching ship, the voyage will succeed and that ships reputation will be earned.")
-    print(f"Rule 5: If you do not own the matching ship, the encounters penalty will land instead.")
-    print(
-        f"Rule 6: You cannot spend more than you have. Reputation can't drop below 0. Reaching 30 reputation is a Win! Game will end after a win is achieved.{RESET}")
-    print(f"{RED}Rule 7: Your ships are only for that voyage! After the Voyage your ships will reset back to none! {RESET}")
-    print(f"{GREEN}Ready to play?{RESET}")
+    print(f"{GREEN}{'Are you ready to get sailing!?'.center(WIDTH)}{RESET}")
 
 
 # Dice Roll rules
@@ -362,7 +385,9 @@ def hire_the_fleet(doubloons, reputation):
         print("Harbor Shop".center(WIDTH))
         print(DISPLAY_DIVIDER)
         print("Your current Doubloons and Reputation".center(WIDTH))
+        print(DISPLAY_SINGLE_DIVID)
         show_score(doubloons, reputation)
+        print(DISPLAY_SINGLE_DIVID.center(WIDTH))
         show_ships()
         print()
         owned_ships, cost = hire_ships(doubloons)
