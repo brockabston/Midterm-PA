@@ -2,18 +2,10 @@ import random  # looked up how to random generate and had to use import
 import os  # looked up a how to clear screen after reading feedback to clear it. importing OS to use the right clear command for the right os
 import textwrap  # looked up and found out that you could use text wrap in python by importing it. Used this for my rules formatting
 
-# Constant menu dividers    #look up how to center the code so it looks cleaner, makes divider equal
+# Constant menu dividers    #look up how to center the code so it looks cleaner, centers on set width
 WIDTH = 50
 DISPLAY_DIVIDER = "=" * WIDTH
 DISPLAY_SINGLE_DIVID = "-" * WIDTH
-# def display_divider():    #could work better
-#     print(""* 30)
-
-
-def big_space():
-    for i in range(10):
-        print()
-
 
 # List of ships and their matching name, price, rep, and random encounter
 ships = [["sloop", 2, 4, "merchant convoy"],
@@ -21,8 +13,8 @@ ships = [["sloop", 2, 4, "merchant convoy"],
          ["frigate", 4, 8, "cursed fog"],
          ["galleon", 5, 10, "rival armada"],
          ["man-o-war", 6, 12, "the kraken"]]
-encounters = ["merchant convoy", "naval patrol",
-              "cursed fog", "rival armada", "the kraken"]
+# encounters = ["merchant convoy", "naval patrol",      #realized i never use this list and went with match case instead
+#               "cursed fog", "rival armada", "the kraken"]
 
 # COLORS (looked up how to make text different colors)
 RED = "\033[31m"
@@ -39,20 +31,24 @@ def clear_screen():
 
 def pause():
     # makes player hit the enter key to start next step then clears the screen for next menu
-    input("Press Enter to continue:    ")
+    input(f"{GREEN}Press Enter to continue:    {RESET}")
     clear_screen()
 
 
 # Display function for main menu
 def display(doubloons, reputation):
     print(DISPLAY_DIVIDER)
-    print("Captain's Cove - Main Menu".center(WIDTH))
+    print("Captain's Cove".center(WIDTH))  # headers
+    print("--Main Menu--".center(WIDTH))
     print(DISPLAY_DIVIDER)
-    print(f"Doubloons: {doubloons}   Reputation: {reputation}")
+    show_score(doubloons, reputation)  # print doubloons repuation and rank
     print(DISPLAY_SINGLE_DIVID)
-    print("1. Dice Duel")
-    print("2. Hire the Fleet")
-    print("3. Leave the Cove")
+    print()
+    print(f"{'1.':<5} {'Dice Duel':<20}{'(Win more douboons)':<20}")
+    print(f"{'2.':<5} {'Hire the Fleet':<20}{'(Increase your reputation)':<20}")
+    print(f"{'3.':<5} {'Leave the Cove':<20}{'(End your journey)':<20}")
+    print()
+    print(DISPLAY_DIVIDER)
 
 
 # function for main menu
@@ -64,7 +60,7 @@ def main():
     choice = ""
     while choice != "3":
         display(doubloons, reputation)
-        choice = input("Enter your choice: ").strip()
+        choice = input(f"{GREEN}Enter your choice: {RESET}").strip()
 
         if choice == "1":
             # returns game totals and updates them
@@ -112,7 +108,7 @@ def get_num(question, min, max):
 # yes no questions/making sure that the answer is a yes or no
 def yes_or_no(question):
     while True:
-        choice = input(question).strip().lower()
+        choice = input(f"{GREEN}{question}{RESET}").strip().lower()
 
         if choice == "yes":
             return True
@@ -174,7 +170,7 @@ def opponent_turn():
     rolls = [die1, die2]
     opponent_score = die1 + die2
     print(
-        f"{RED}Opponent's Rolls: {rolls} Total: {opponent_score}{RED}")
+        f"{RED}Opponent's Rolls: {rolls} Total: {opponent_score}{RESET}")
     while opponent_score < 17:
         print("Your opponent is rolling again!")
         roll = die_roll()
@@ -209,7 +205,7 @@ def die_winner(player_score, opponent_score):
 
 # main dice duel game function
 def dice_duel(doubloons, reputation):
-    pause()
+    clear_screen()
     print(DISPLAY_DIVIDER)  # prints header
     print(f"Welcome to dice duel {rank_earned(reputation)}!".center(WIDTH))
     print(DISPLAY_DIVIDER)
@@ -224,7 +220,10 @@ def dice_duel(doubloons, reputation):
     while True:
 
         # bet amount is pulling get num to make sure bet is in between min and max
-        bet_amount = get_num("Place your wager: ", 1, doubloons)
+        bet_amount = get_num(
+            "Place your wager (0 to return to Main Menu): ", 0, doubloons)
+        if bet_amount == 0:
+            break
         player_score = player_turn()  # gets player score
         if player_score > 21:  # checks if bust
             # (DNR = Did not roll because player busted) --- This is changed to -1 when player busts now from feedback comments
@@ -339,17 +338,29 @@ def fleet_rules():
 
 # Dice Roll rules
 def dice_rules():
-    print("       Rules for Dice Duel")  # lists rules
+    rules = [
+        "You may only bet doubloons you have currently!",
+        "You start by rolling two die and try to get as close to 21 as possible!",
+        "You can chose to roll again once as many times as you want with each adding to your previous rolls that turn! But be careful, going over 21 means you bust and lose!",
+        "Ties result in a rival captain win. The only exception is if you both finish with a 21, you beat the rival captain! ",
+        "Die rolls are equal to the number you roll, except rolling a 6 is counted as 10 towards your total.",
+        "The rival captain always rolls after you have already gotten your total. ",
+        "If you bust, you lose the hand. The rival captain will not roll as you lose as soon as you bust. ",
+        "If the rival busts, you win!",
+    ]
+    print(DISPLAY_DIVIDER)
+    print("Welcome to Dice Duel!".center(WIDTH))  # Centers title
+    print(DISPLAY_DIVIDER)
+    num = 1  # Set first rule to one as the count
+    for rule in rules:
+        wrapped_text = textwrap.fill(
+            # wraps text between my preset width
+            f"Rule {num}. {rule}", width=WIDTH, subsequent_indent="   ")
+        print(f"{BLUE}{wrapped_text}{RESET}")
+        print()
+        num = num + 1
     print(DISPLAY_SINGLE_DIVID)
-    print(f"{BLUE}Rule 1: You may only bet doubloons you have currently!")
-    print(f"Rule 2: You start by rolling two die and try to get as close to 21 as possible!")
-    print(f"Rule 3: You can chose to roll again once as many times as you want with each adding to your previous rolls that turn! But be careful, going over 21 means you bust and lose!")
-    print(f"Rule 4: Ties result in a rival captain win. The only exception is if you both finish with a 21, you beat the rival captain! ")
-    print(f"Rule 5: Die rolls are equal to the number you roll, except rolling a 6 is counted as 10 towards your total.")
-    print(f"Rule 6: The rival captain always rolls after you have already gotten your total. ")
-    print(f"Rule 7: The rival captain keeps rolling until their score is 17 or more. ")
-    print(f"Rule 8: If you bust, the game ends. The rival captain will not roll as you lose as soon as you bust. ")
-    print(f"Rule 9: If the rival busts, you win! {RESET}")
+    print(f"{GREEN}{'Are you ready to get gambling!?'.center(WIDTH)}{RESET}")
 
 
 # Gives rank based on reputation
@@ -441,6 +452,8 @@ def hire_the_fleet(doubloons, reputation):
                 print(f"{GREEN} You saw a Merchant Convoy and waved at them!{RESET}")
             elif encounter == "naval patrol":
                 doubloons = doubloons - 3
+                if doubloons < 0:
+                    doubloons = 0
                 fine = random.randint(1, 5)
                 match fine:
                     case 1:
@@ -473,10 +486,12 @@ def hire_the_fleet(doubloons, reputation):
         show_score(doubloons, reputation)
         if game_over(doubloons, reputation):
             break
+        # if yes or no return False then it breaks lines
         if not yes_or_no("Would you like to keep sailing? (yes/no): "):
             break
     print(DISPLAY_SINGLE_DIVID)
     print(
+        # := makes a positive print as +x and negative -x
         f"Voyage Over! Session earnings: {doubloons - start_doubloons:+} doubloons, {reputation - start_rep:+} reputation")
     print(DISPLAY_SINGLE_DIVID)
     pause()
